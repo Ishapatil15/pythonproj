@@ -1,0 +1,82 @@
+import datetime
+
+class Student:
+    def __init__(self, student_id, name):
+        self.student_id = student_id
+        self.name = name
+        self.attendance = []
+        self.assignments = []
+
+    def mark_attendance(self):
+        today = datetime.date.today()
+        if today not in self.attendance:
+            self.attendance.append(today)
+            print(f"Attendance marked for {self.name} on {today}.")
+        else:
+            print(f"Attendance for {self.name} is already marked today.")
+
+    def submit_assignment(self, assignment):
+        self.assignments.append(assignment)
+        print(f"{self.name} submitted assignment '{assignment.title}'.")
+
+class Assignment:
+    def __init__(self, title, due_date):
+        self.title = title
+        self.due_date = due_date
+
+class Classroom:
+    def __init__(self, class_name):
+        self.class_name = class_name
+        self.students = {}
+
+    def add_student(self, student):
+        if student.student_id not in self.students:
+            self.students[student.student_id] = student
+            print(f"Student {student.name} added to {self.class_name}.")
+        else:
+            print(f"Student {student.name} is already in the class.")
+
+    def mark_attendance(self, student_id):
+        if student_id in self.students:
+            student = self.students[student_id]
+            student.mark_attendance()
+        else:
+            print("Student not found in this classroom.")
+
+    def assign_homework(self, title, due_date):
+        assignment = Assignment(title, due_date)
+        for student in self.students.values():
+            student.submit_assignment(assignment)
+
+    def get_attendance_report(self):
+        report = {}
+        for student in self.students.values():
+            report[student.name] = len(student.attendance)
+        return report
+
+    def notify_students(self, message):
+        for student in self.students.values():
+            print(f"Notification to {student.name}: {message}")
+
+# Example Usage
+classroom = Classroom("Math 101")
+
+# Adding students
+student1 = Student(student_id=1, name="Alice")
+student2 = Student(student_id=2, name="Bob")
+classroom.add_student(student1)
+classroom.add_student(student2)
+
+# Mark attendance
+classroom.mark_attendance(student_id=1)
+classroom.mark_attendance(student_id=2)
+
+# Assign homework
+classroom.assign_homework(title="Algebra Homework", due_date="2024-11-05")
+
+# Get attendance report
+report = classroom.get_attendance_report()
+print("Attendance Report:", report)
+
+# Notify students
+classroom.notify_students("Remember to complete your assignments by the due date!")
